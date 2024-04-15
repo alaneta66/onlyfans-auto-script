@@ -10,13 +10,13 @@ const url = 'https://onlyfans.com';
 
 async function main() {
 
-    if (process.argv.slice(2).length !== 3) {
-        console.log('Usage: register.js <email> <password> <name>');
+    if (process.argv.slice(2).length !== 2) {
+        console.log('Usage: register.js <email> <password>');
         process.exit(0);
     }
     const [email, password, name] = process.argv.slice(2)
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
     });
     const page = await browser.newPage();
     await page.setRequestInterception(true);
@@ -25,7 +25,7 @@ async function main() {
 
     page.on('request', async interceptedRequest => {
 
-        if ( interceptedRequest.url().includes('/api2/v2/users/register')) {
+        if ( interceptedRequest.url().includes('/api2/v2/users/login')) {
             const originData = JSON.parse(interceptedRequest.postData());
             delete originData['e-recaptcha-response'];
             delete originData['ec-recaptcha-response'];
@@ -50,10 +50,10 @@ async function main() {
         const url = response.url();
         const status = response.status();
         const headers = response.headers();
-        
-        if (url.includes('/api2/v2/users/register')) {
+
+        if (url.includes('/api2/v2/users/login')) {
             if (status === 200) {
-                console.log('register success');
+                console.log('login success');
                 process.exit(0);
             } else {
                 console.error('register failed', await response.json());
@@ -66,17 +66,11 @@ async function main() {
         waitUntil: 'networkidle0',
     });
 
-    const element = await page.waitForSelector('[at-attr="sign_up"]');
-    await element.click();
-
-    const nameInput = await page.waitForSelector('[name="name"]');
-    await nameInput.focus();
-    await nameInput.type(name);
 
     const emailInput = await page.waitForSelector('[name="email"]');
     await emailInput.focus();
     await emailInput.type(email);
-    
+
     const passwordInput = await page.waitForSelector('[name="password"]');
     await passwordInput.focus();
     await passwordInput.type(password);
