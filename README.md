@@ -7,7 +7,7 @@ TIPS:
 
 1. find the onlyfans register api url
 2. find the onlyfans reCaptcha websiteKey and reCaptcha version
-   - get the [NextCaptcha](https://dashboard.nextcaptcha.com/) clientKey and set as environment variables 
+   - get the [NextCaptcha](https://dashboard.nextcaptcha.com/) clientKey and set as environment variables `NEXTCAPTCHA_KEY`
 4. interceptedRequest the request
 5. replace the reCAPTCHA token
 6. send the request
