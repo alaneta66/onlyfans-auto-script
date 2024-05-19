@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.5",
     "axios": "^1.6.8",
+    "lodash": "^4.17.21",
     "nextcaptcha-ts": "^1.0.5",
     "puppeteer": "^22.6.4"
   }

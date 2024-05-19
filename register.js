@@ -8,15 +8,17 @@ const client = new NextCaptcha(clientKey);
 const websiteKey='6LddGoYgAAAAAHD275rVBjuOYXiofr1u4pFS5lHn'
 const url = 'https://onlyfans.com';
 
-async function main() {
+async function register(email, password ,name) {
 
-    if (process.argv.slice(2).length !== 3) {
-        console.log('Usage: register.js <email> <password> <name>');
-        process.exit(0);
-    }
-    const [email, password, name] = process.argv.slice(2)
+    // if (process.argv.slice(2).length !== 3) {
+    //     console.log('Usage: register.js <email> <password> <name>');
+    //     process.exit(0);
+    // }
+    // const [email, password, name] = process.argv.slice(2)
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
+        args:[],
+        devtools: true
     });
     const page = await browser.newPage();
     await page.setRequestInterception(true);
@@ -29,7 +31,7 @@ async function main() {
             const originData = JSON.parse(interceptedRequest.postData());
             delete originData['e-recaptcha-response'];
             delete originData['ec-recaptcha-response'];
-
+            // console.log(token.solution.gRecaptchaResponse, 'token.solution.gRecaptchaResponse')
             const overrides = {
                 'method': 'POST',
                 postData: JSON.stringify({
@@ -53,11 +55,13 @@ async function main() {
         
         if (url.includes('/api2/v2/users/register')) {
             if (status === 200) {
-                console.log('register success');
-                process.exit(0);
+                console.log('register success', email, password ,name);
+                // process.exit(0);
+                await browser.close()
             } else {
-                console.error('register failed', await response.json());
-                process.exit(0);
+                console.error('register failed', await response.json(), email, password ,name);
+                // process.exit(0);
+                await browser.close()
             }
         }
     });
@@ -85,4 +89,4 @@ async function main() {
 
 }
 
-main()
+module.exports = register
