@@ -1,4 +1,3 @@
-const axios = require('axios').default;
 const NextCaptcha = require('nextcaptcha-ts').default;
 const puppeteer= require('puppeteer');
 
@@ -8,13 +7,13 @@ const client = new NextCaptcha(clientKey);
 const websiteKey='6LddGoYgAAAAAHD275rVBjuOYXiofr1u4pFS5lHn'
 const url = 'https://onlyfans.com';
 
-async function main() {
+async function login(email, password ,name) {
 
-    if (process.argv.slice(2).length !== 2) {
-        console.log('Usage: register.js <email> <password>');
-        process.exit(0);
-    }
-    const [email, password, name] = process.argv.slice(2)
+    // if (process.argv.slice(2).length !== 2) {
+    //     console.log('Usage: register.js <email> <password>');
+    //     process.exit(0);
+    // }
+    // const [email, password, name] = process.argv.slice(2)
     const browser = await puppeteer.launch({
         headless: true,
     });
@@ -49,15 +48,16 @@ async function main() {
     page.on('response', async (response) => {
         const url = response.url();
         const status = response.status();
-        const headers = response.headers();
 
         if (url.includes('/api2/v2/users/login')) {
             if (status === 200) {
-                console.log('login success');
-                process.exit(0);
+                console.log('login success', email, password ,name);
+                // process.exit(0);
+                await browser.close()
             } else {
-                console.error('register failed', await response.json());
-                process.exit(0);
+                console.error('register failed', await response.json(), email, password ,name);
+                // process.exit(0);
+                await browser.close()
             }
         }
     });
@@ -79,4 +79,4 @@ async function main() {
 
 }
 
-main()
+module.exports = login
